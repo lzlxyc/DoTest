@@ -417,7 +417,7 @@ class Solution(object):
     6   4
 输出：[[8], [2, 12], [6, 4]]
 """
-Definition for a binary tree node.
+# Definition for a binary tree node.
 class TreeNode(object):
     def __init__(self, x):
         self.val = x
