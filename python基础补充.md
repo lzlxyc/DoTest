@@ -1,3 +1,7 @@
+解决git中不能push的问题
+https://blog.csdn.net/qq_46123200/article/details/134392486
+
+
 # 一、内置队列
 ## 1、LILO队列
 - 先进先出
@@ -50,8 +54,15 @@ d.popleft()
 
 ```
 
+## itertools.permutations
 
 
-
-
+## cmp_to_key比较数值大小
+```python
+from functools import cmp_to_key
+def cmp(a,b):
+    return a - b 
+l = [(2,1),(1,4),(6,4)]
+l.sort(key=cmp_to_key(cmp))
+```
 
