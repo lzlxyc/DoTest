@@ -21,7 +21,8 @@ class Solution(object):
         """
         # 如果某些数字不在 0∼n−1的范围内，或数组中不包含重复数字，则返回 -1；
         len_num = len(nums)
-        if not nums or max(nums) >= len_num or min(nums) < 0: return -1
+        if not nums or max(nums) >= len_num or min(nums) < 0:
+            return -1
         # 方法一：利用字典：时间复杂度：O(N)，空间复杂度：O(N)
         num_dict = {}
         for value in nums:
@@ -37,7 +38,8 @@ class Solution(object):
             while nums[idx] != nums[nums[idx]]:
                 value = nums[idx]
                 nums[idx], nums[value] = nums[value],nums[idx]
-            if nums[idx] != idx: return nums[idx]
+            if nums[idx] != idx:
+                return nums[idx]
         return -1
 
 
@@ -76,10 +78,11 @@ class Solution(object):
         # 时间复杂度O(NlogN),空间复杂度O(1)
         l, r = 1, len(nums) - 1
         while l < r:
-            l_num = 0
-            mid = int(l + r >> 1)
-            for num in nums: l_num += num <= mid
-            if l_num > mid:
+            s = 0
+            mid = (l + r) // 2
+            for num in nums:
+                s += int(l <= num <= mid)
+            if s > mid - l + 1:
                 r = mid
             else:
                 l = mid + 1
@@ -329,12 +332,14 @@ class Solution(object):
         """
         :type n: int
         :rtype: int
+        0 1 1 2 3 5 8
         """
         if n <= 1: return n
-        numlist = [0,1]
-        for i in range(2,n+1):
-            numlist.append(numlist[i-1]+numlist[i-2])
-        return numlist[-1]
+        a, b = 0, 1
+        for _ in range(1, n):
+            a, b = b, a + b
+
+        return b
 
 
 """

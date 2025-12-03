@@ -20,23 +20,26 @@ class Solution:
         """
         :type head: ListNode
         :rtype: ListNode
+        null   1 -> 2 -> 3 -> null
+        null            pre head  q
         """
-        '''方法1：用迭代法
-        if not head or not head.next: return head
-        l, m, r = head, head.next,head.next.next
-        m.next = l 
-        while r:
-            l, m, r = m, r, r.next
-            m.next = l 
-        head.next = None
-        return m
-        '''
+        # 方法1：迭代法
+        # pre = None
+        # while head:
+        #     q = head.next
+        #     head.next = pre
+        #     pre = head
+        #     head = q
+        #
+        # return pre
         '''方法2：用递归法'''
         if not head or not head.next: return head
         tail = self.reverseList(head.next)
         head.next.next = head
         head.next = None
         return tail
+    
+    
 
 """
 36. 合并两个排序的链表
@@ -63,16 +66,16 @@ class Solution(object):
         p = head = ListNode(-1)
         while l1 and l2:
             if l1.val < l2.val:
-                p.next = l1
-                l1 = l1.next
+                p.next, l1 = l1, l1.next
             else:
-                p.next = l2
-                l2 = l2.next
+                p.next, l2 = l2, l2.next
             p = p.next
-        if l1: p.next = l1
-        if l2: p.next = l2
-        return head.next
+        if l1:
+            p.next = l1
+        else:
+            p.next = l2
 
+        return head.next
 """
 37. 树的子结构
 输入两棵二叉树 A，B，判断 B是不是 A的子结构。

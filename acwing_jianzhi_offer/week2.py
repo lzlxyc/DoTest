@@ -40,6 +40,19 @@ class Solution(object):
 
         return res
 
+    def movingCount_v2(self, threshold, rows, cols):
+        res = 0
+        mat = [[True] * cols for _ in range(rows)]
+        def dfs(y, x):
+            if 0 <= y < rows and 0 <= x < cols and mat[y][x] and not self.if_over(x, y, threshold):
+                mat[y][x] = False
+                res += 1
+                for (_x, _y) in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                    dfs(y + _y, x + _x)
+
+        dfs(0, 0)
+        return res
+
     def over(self, x, y):
         return self.k < sum([int(num) for num in list(str(x))]) + sum([int(num) for num in list(str(y))])
 
@@ -65,9 +78,9 @@ class Solution(object):
         last = length % 3
         num = int(length/3)
         '''
-        if last == 0: return 3**num
+        if last == 0: return 3**num = 3**(num-1) * 3 
         if last == 1: return 3**(num-1)*4
-        if last == 2: return 3**(num)*2
+        if last == 2: return 3**(num)*2 = 3**(num-1)*6 
         '''
         return 3**(num-1)*num_map[last]
 
@@ -87,16 +100,26 @@ class Solution(object):
         :type n: int
         :rtype: int
         """
-        res, idx = int(n < 0), 32
-        if n < 0: n = 2**31 + n
-        while n:
-            idx -= 1
-            num = 2**idx
-            if num > n: continue
-            else:
-                res += 1
-                n -= num
-        return res
+        # res, idx = int(n < 0), 32
+        # if n < 0: n = 2**31 + n
+        # while n:
+        #     idx -= 1
+        #     num = 2**idx
+        #     if num > n: continue
+        #     else:
+        #         res += 1
+        #         n -= num
+        # return res
+
+        '''
+        负数n的补码: -2^31 + X = n ==>> X = -2^31 - n
+        则，先计算X中1的个数，再+1(第32位为1表示负数，需要加上)
+        '''
+        res = 0
+        curr_n = 2 ** 31 + n if n < 0 else n
+        for i in range(32):
+            res += (curr_n >> i) & 1
+        return res + int(n < 0)
 
 """
 27. 数值的整数次方
@@ -134,15 +157,16 @@ class Solution(object):
         return g*res
         '''
         # 方法2：快速幂
-        res = 1
-        g = int(exponent < 0)
+        g = exponent > 0
         k = abs(exponent)
+        res = 1
         while k:
             if k & 1: res *= base
             base *= base
             k >>= 1
-        if g: res = 1 / res
-        return res
+            if not g and res > 100:
+                return 0.0
+        return res if g else 1 / res
 
 
 """
@@ -168,10 +192,8 @@ class Solution(object):
         :rtype: void
         将下一个节点的值赋值给当前节点，将next指向下一个的下一个，即把自己替换成next，删除原本的next
         """
-        p = node.next
         node.val = node.next.val
         node.next = node.next.next
-        del p
 
 """
 29. 删除链表中重复的节点
@@ -195,19 +217,31 @@ class Solution(object):
         :type head: ListNode
         :rtype: ListNode
         """
-        if not head or not head.next: return head
-        s = p = ListNode(-1)
-        s.next, p.next = head, head
-        while head and head.next:
-            if head.val != head.next.val:
-                p = head
-                head = head.next
+        # if not head or not head.next: return head
+        # s = p = ListNode(-1)
+        # s.next, p.next = head, head
+        # while head and head.next:
+        #     if head.val != head.next.val:
+        #         p = head
+        #         head = head.next
+        #     else:
+        #         while head and head.next and head.val==head.next.val:
+        #             head = head.next
+        #         head = head.next
+        #         p.next = head
+        # return s.next
+
+        p = first = ListNode(-1)
+        first.next = head
+
+        while p.next:
+            if p.next.next and p.next.val == p.next.next.val:
+                val = p.next.val
+                while p.next and p.next.val == val:
+                    p.next = p.next.next
             else:
-                while head and head.next and head.val==head.next.val:
-                    head = head.next
-                head = head.next
-                p.next = head
-        return s.next
+                p = p.next
+        return first.next
 
 
 """hard
@@ -263,7 +297,6 @@ class Solution(object):
         :type array: List[int]
         :rtype: void
         """
-        if not array: return []
         l, r = 0, len(array) - 1
         while l < r:
             while l < r and array[l] % 2: l += 1
@@ -300,11 +333,9 @@ class Solution(object):
             len_node += 1
             p = p.next
         if len_node < k: return None
-        len_node -= k
         p = pListHead
-        while len_node:
+        for _ in range(len_node - k):
             p = p.next
-            len_node -= 1
         return p
 
 """图
